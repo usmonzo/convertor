@@ -12,6 +12,7 @@
 
  .conversion-card {
    background: #fff;
+   padding: 12px;
    border-radius: 12px;
    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
    transition: all 0.2s ease;
@@ -29,7 +30,9 @@
  }
 
  .input-wrapper {
-   flex: 1;
+   display: flex;
+   justify-content: center;
+   align-items: center;
  }
 
  .input-label {
@@ -37,6 +40,9 @@
    font-size: 2rem;
    color: #9299a2;
    margin-bottom: 4px;
+   text-align: start;
+   align-self: center;
+   justify-self: start;
  }
 
  .tinkoff-input {
@@ -99,5 +105,9 @@
 
    .result-wrapper {
      text-align: center;
+   }
+
+   .input-label {
+     align-self: flex-start;
    }
  }

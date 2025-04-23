@@ -23,13 +23,6 @@
     if (!gallons) return 0;
     return gallons * 3.78541;
   }
-  function clearIfZero(val: number | null) {
-    if (val === 0) val = null;
-  }
-
-  function restoreIfEmpty(val: number | null) {
-    if (val === null || val === undefined || isNaN(val)) val = 0;
-  }
 
   $: lper100km = convertMPGtoLPer100KM(mpg);
   $: kilometers = convertMilesToKm(milesValue);
@@ -41,7 +34,7 @@
     <div class="conversion-card">
       <div class="card-content">
         <div class="input-wrapper">
-          <label class="input-label" for="mpg">MPG</label>
+          <h1 class="input-label">MPG</h1>
           <input
             id="mpg"
             bind:value={mpg}

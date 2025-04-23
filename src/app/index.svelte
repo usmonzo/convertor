@@ -4,12 +4,13 @@
   import Footer from "../shared/ui/Footer/Footer.svelte";
   import Converter from "../entities/Auto/Converter.svelte";
   import CurrencyConverter from "../entities/Currency/CurrencyConverter.svelte";
+  import Statistics from "../entities/Statistics/Statistics.svelte";
 
-  let activeTab: "auto" | "currency" | "measures" = "auto";
+  let activeTab: "auto" | "currency" | "statistics" = "auto";
   let isDarkMode = false;
   setContext("isDarkMode", isDarkMode);
 
-  function switchTab(tab: "auto" | "currency" | "measures") {
+  function switchTab(tab: "auto" | "currency" | "statistics") {
     activeTab = tab;
   }
 
@@ -41,8 +42,8 @@
           Валюты
         </button>
         <button
-          class="tab-button {activeTab === 'measures' ? 'active' : ''}"
-          on:click={() => switchTab("measures")}
+          class="tab-button {activeTab === 'statistics' ? 'active' : ''}"
+          on:click={() => switchTab("statistics")}
         >
           <span class="tab-icon">📊</span>
           Статистика
@@ -91,6 +92,14 @@
             <div class="converter-wrapper">
               <CurrencyConverter />
             </div>
+          {:else if activeTab === "statistics"}
+            <div class="section-header">
+              <h2>Статистика расхода топлива</h2>
+              <p class="section-description">
+                Статистика потребления моего авто
+              </p>
+              <Statistics />
+            </div>
           {:else}
             <div class="section-header">
               <h2>Меры измерения</h2>
@@ -136,16 +145,16 @@
   }
 
   .page-header {
-    position: sticky;
-    top: 16px;
-    margin-top: 16px;
+    /* position: sticky; */
+    /* top: 16px; */
+    /* margin-top: 16px; */
     background: #ffffff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     padding: 16px 0;
     border-radius: 18px;
     z-index: 100;
     width: 100%;
-    max-width: 1000px;
+    /* max-width: 1000px; */
     align-self: center;
   }
 
