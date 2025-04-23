@@ -38,7 +38,7 @@
           class="tab-button {activeTab === 'currency' ? 'active' : ''}"
           on:click={() => switchTab("currency")}
         >
-          <span class="tab-icon">💱</span>
+          <span class="tab-icon">💵</span>
           Валюты
         </button>
         <button

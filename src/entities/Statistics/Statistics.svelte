@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { getContext, onMount } from "svelte";
   import Chart from "chart.js/auto";
 
   let distance = "";
   let fuel = "";
   let comment = "";
+  const theme = getContext<boolean>("isDarkMode");
 
   let entries: Array<{
     id: string;
@@ -23,7 +24,7 @@
   });
 
   async function loadStats() {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}}/stats`);
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/stats`);
     entries = await res.json();
     if (!isMobile) updateChart();
   }
@@ -36,7 +37,7 @@
       date: new Date().toISOString(),
     };
 
-    await fetch(`${import.meta.env.VITE_BASE_URL}}/stats`, {
+    await fetch(`${import.meta.env.VITE_BASE_URL}/stats`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(entry),
@@ -84,13 +85,8 @@
   <h2>Статистика расхода топлива</h2>
 
   <form on:submit|preventDefault={submit}>
-    <input
-      type="number"
-      bind:value={distance}
-      placeholder="Пробег (км)"
-      required
-    />
-    <input type="number" bind:value={fuel} placeholder="Топливо (л)" required />
+    <input bind:value={distance} placeholder="Пробег (км)" required />
+    <input bind:value={fuel} placeholder="Топливо (л)" required />
     <input
       type="text"
       bind:value={comment}
@@ -109,15 +105,33 @@
     <div class="card-list">
       {#each entries as entry}
         <div class="entry-card">
-          <div>
+          <div class="{theme && 'dark '}entry-card-row}">
             <strong>Дата:</strong>
-            {new Date(entry.date).toLocaleDateString()}
+            <div class="dots"></div>
+            <p>
+              {new Date(entry.date).toLocaleDateString()}
+            </p>
           </div>
-          <div><strong>Пробег:</strong> {entry.distance} км</div>
-          <div><strong>Топливо:</strong> {entry.fuel} л</div>
-          {#if entry.comment}<div>
+          <div class="entry-card-row">
+            <strong>Пробег:</strong>
+            <div class="dots"></div>
+            <p>
+              {entry.distance} км
+            </p>
+          </div>
+          <div class="entry-card-row">
+            <strong>Топливо:</strong>
+            <div class="dots"></div>
+            <p>
+              {entry.fuel} л
+            </p>
+          </div>
+          {#if entry.comment}<div class="entry-card-row">
               <strong>Комментарий:</strong>
-              {entry.comment}
+              <div class="dots"></div>
+              <p>
+                {entry.comment}
+              </p>
             </div>{/if}
           <button on:click={() => deleteEntry(entry.id)}>Удалить</button>
         </div>
@@ -129,9 +143,9 @@
         <thead>
           <tr>
             <th>Дата</th>
-            <th>Км</th>
-            <th>Литры</th>
-            <th>Комментарий</th>
+            <th>Расстояние</th>
+            <th>Потребление</th>
+            <th>Тип топлива</th>
             <th></th>
           </tr>
         </thead>
@@ -139,8 +153,8 @@
           {#each entries as entry}
             <tr>
               <td>{new Date(entry.date).toLocaleDateString()}</td>
-              <td>{entry.distance}</td>
-              <td>{entry.fuel}</td>
+              <td>{entry.distance} км</td>
+              <td>{entry.fuel} л</td>
               <td>{entry.comment}</td>
               <td><button on:click={() => deleteEntry(entry.id)}>🗑</button></td
               >
@@ -180,15 +194,24 @@
     cursor: pointer;
     font-size: 16px;
     color: #030303;
+    width: 100%;
+    margin-top: 20px;
   }
   .chart-container {
+    background-color: #fff;
     position: relative;
     width: 100%;
     height: 300px;
     margin-bottom: 24px;
   }
   .table-scroll {
-    overflow-x: auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid #dce1e6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   table {
     width: 100%;
@@ -199,9 +222,10 @@
   th,
   td {
     padding: 10px 14px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #030303;
     text-align: left;
     font-size: 15px;
+    color: #030303;
   }
   .card-list {
     display: flex;
@@ -213,9 +237,33 @@
     background: #fff;
     border-radius: 12px;
     padding: 16px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    font-size: 15px;
+    border: 1px solid #dce1e6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .entry-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
     color: #030303;
+    font-size: 1.1rem;
+  }
+  .dark {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    color: #fff;
+    font-size: 1.1rem;
+  }
+  .dots {
+    flex-grow: 1;
+    border-bottom: 1px dotted #aaa;
+    height: 100%;
+    margin-bottom: 20px;
+    align-self: flex-end;
   }
   .entry-card button {
     margin-top: 8px;
