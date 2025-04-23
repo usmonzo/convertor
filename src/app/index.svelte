@@ -61,7 +61,6 @@
     <div class="tab-content-outer">
       {#key activeTab}
         <div class="tab-panel">
-          >
           {#if activeTab === "auto"}
             <div class="section-header">
               <h2>Автомобильные величины</h2>
