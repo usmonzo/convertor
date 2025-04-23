@@ -1,11 +1,14 @@
 <script lang="ts">
   import { getContext, onMount } from "svelte";
   import Chart from "chart.js/auto";
+  import Loader from "../../shared/ui/Loader/Loader.svelte";
 
   let distance = "";
   let fuel = "";
   let comment = "";
   const theme = getContext<boolean>("isDarkMode");
+
+  let loading = true;
 
   let entries: Array<{
     id: string;
@@ -24,12 +27,15 @@
   });
 
   async function loadStats() {
+    loading = true;
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}/stats`);
     entries = await res.json();
+    loading = false;
     if (!isMobile) updateChart();
   }
 
   async function submit() {
+    loading = true;
     const entry = {
       distance: parseFloat(distance),
       fuel: parseFloat(fuel),
@@ -50,6 +56,7 @@
   }
 
   async function deleteEntry(id: string) {
+    loading = true;
     await fetch(`${import.meta.env.VITE_BASE_URL + "/stats/" + id}`, {
       method: "DELETE",
     });
@@ -82,8 +89,6 @@
 </script>
 
 <div class="converter-wrapper">
-  <h2>Статистика расхода топлива</h2>
-
   <form on:submit|preventDefault={submit}>
     <input bind:value={distance} placeholder="Пробег (км)" required />
     <input bind:value={fuel} placeholder="Топливо (л)" required />
@@ -137,6 +142,8 @@
         </div>
       {/each}
     </div>
+  {:else if loading}
+    <Loader />
   {:else}
     <div class="table-scroll">
       <table>
@@ -163,6 +170,7 @@
         </tbody>
       </table>
     </div>
+    }
   {/if}
 </div>
 
